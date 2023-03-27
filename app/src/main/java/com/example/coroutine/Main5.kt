@@ -6,6 +6,9 @@ import kotlinx.coroutines.runBlocking
 
 /**
  * Channel
+ *
+ * 使用 Channel 一般通过 produce{} 创建，使用 consumeEach{} 接收
+ * 如果要定制 Channel 的处理逻辑，就只能自己创建 Channel，但需要自己处理关闭逻辑
  */
 object Main5 {
 
@@ -230,15 +233,29 @@ object Main5 {
     }
 
     private fun channelConsumeEachExample() = runBlocking {
-        val channel: ReceiveChannel<Int> = produce(capacity = 3) {
-            (1..300).forEach {
+//        send: 1
+//        send: 2
+//        send: 3
+//        send: 4
+//        receive 1
+//        receive 2
+//        receive 3
+//        receive 4
+//        receive 5
+//        send: 5
+//        ========================
+//        end
+//        Thread:main
+
+        val channel = produce(capacity = 3) {
+            (1..5).forEach {
                 send(it)
                 println("send: $it")
             }
         }
 
         // channel.receive() 是非常危险的操作，如果管道没有 close() 它会一直挂起
-        // 应该使用 consumeEach 接收数据
+        // 应该使用 consumeEach 接收数据，接收结束后会自动关闭
         channel.consumeEach {
             println("receive $it")
         }
