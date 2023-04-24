@@ -76,7 +76,7 @@ class FlowActivity : AppCompatActivity() {
             // 通过超时机制判断，如果屏幕旋转重新创建没有超过设定的时间，flow 可以继续工作
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.timeFlow.collect { time ->
+                    viewModel.stateFlow.collect { time ->
                         textView.text = time.toString()
                         Log.v("@@@", "update time $time in UI")
                     }
